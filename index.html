@@ -1,0 +1,2961 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Executivo - Análise de Gargalos MPDFT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #3498db;
+            --accent-light: #5dade2;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --text: #333;
+            --text-light: #7f8c8d;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            width: 250px;
+            overflow-y: auto;
+            transition: var(--transition);
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+
+        .nav-menu {
+            list-style: none;
+            margin-top: 30px;
+        }
+
+        .nav-item {
+            margin-bottom: 10px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            border-radius: var(--radius);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            grid-column: 2;
+            padding: 30px;
+            transition: var(--transition);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .date-filter {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 10px 15px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .date-filter select {
+            border: none;
+            background: transparent;
+            padding: 5px;
+            font-size: 0.9rem;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        /* KPI Cards */
+        .kpi-cards {
+            grid-column: span 12;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .kpi-title {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .kpi-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .kpi-icon.success {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+        }
+
+        .kpi-icon.warning {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+
+        .kpi-icon.danger {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        .kpi-icon.info {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--accent);
+        }
+
+        .kpi-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .kpi-trend {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .kpi-trend.up {
+            color: var(--success);
+        }
+
+        .kpi-trend.down {
+            color: var(--danger);
+        }
+
+        .kpi-trend i {
+            margin-right: 5px;
+        }
+
+        /* Chart Containers */
+        .chart-container {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .chart-container:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .chart-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chart-action {
+            background: var(--light);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-light);
+        }
+
+        .chart-action:hover {
+            background: var(--accent-light);
+            color: white;
+        }
+
+        .chart-content {
+            height: 300px;
+            position: relative;
+        }
+
+        /* Grid Layouts */
+        .full-width {
+            grid-column: span 12;
+        }
+
+        .half-width {
+            grid-column: span 6;
+        }
+
+        .third-width {
+            grid-column: span 4;
+        }
+
+        .two-thirds {
+            grid-column: span 8;
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .data-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-badge.success {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+        }
+
+        .status-badge.warning {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+
+        .status-badge.danger {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        /* Recommendations Section */
+        .recommendations {
+            grid-column: span 12;
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-top: 20px;
+        }
+
+        .recommendations-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .recommendations-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .recommendation-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .recommendation-card {
+            border-left: 4px solid var(--accent);
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            transition: var(--transition);
+        }
+
+        .recommendation-card:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow);
+        }
+
+        .recommendation-card.high {
+            border-left-color: var(--danger);
+        }
+
+        .recommendation-card.medium {
+            border-left-color: var(--warning);
+        }
+
+        .recommendation-card.low {
+            border-left-color: var(--success);
+        }
+
+        .recommendation-priority {
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+
+        .recommendation-priority.high {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        .recommendation-priority.medium {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+
+        .recommendation-priority.low {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+        }
+
+        .recommendation-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .recommendation-desc {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .recommendation-impact {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 0.85rem;
+        }
+
+        .impact-label {
+            margin-right: 10px;
+            font-weight: 500;
+        }
+
+        .impact-bar {
+            height: 6px;
+            background: #eee;
+            border-radius: 3px;
+            width: 100px;
+            overflow: hidden;
+        }
+
+        .impact-value {
+            height: 100%;
+            background: var(--accent);
+        }
+
+        .impact-value.high {
+            background: var(--danger);
+            width: 90%;
+        }
+
+        .impact-value.medium {
+            background: var(--warning);
+            width: 65%;
+        }
+
+        .impact-value.low {
+            background: var(--success);
+            width: 40%;
+        }
+
+        /* Section Styles */
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: var(--light);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+            box-sizing: border-box;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border: 4px solid var(--accent);
+            border-radius: 50%;
+            top: 15px;
+            z-index: 1;
+        }
+
+        .timeline-item.left {
+            left: 0;
+        }
+
+        .timeline-item.right {
+            left: 50%;
+        }
+
+        .timeline-item.left::after {
+            right: -12px;
+        }
+
+        .timeline-item.right::after {
+            left: -12px;
+        }
+
+        .timeline-content {
+            padding: 20px;
+            background-color: white;
+            position: relative;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .timeline-content h3 {
+            margin-top: 0;
+            color: var(--dark);
+        }
+
+        .timeline-content::after {
+            content: '';
+            position: absolute;
+            border-style: solid;
+            border-width: 10px;
+            top: 15px;
+        }
+
+        .timeline-item.left .timeline-content::after {
+            border-color: transparent white transparent transparent;
+            right: -20px;
+        }
+
+        .timeline-item.right .timeline-content::after {
+            border-color: transparent transparent transparent white;
+            left: -20px;
+        }
+
+        /* Progress Bars */
+        .progress-container {
+            margin-bottom: 15px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar-container {
+            height: 8px;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease-in-out;
+        }
+
+        .progress-bar-fill.success {
+            background-color: var(--success);
+        }
+
+        .progress-bar-fill.warning {
+            background-color: var(--warning);
+        }
+
+        .progress-bar-fill.danger {
+            background-color: var(--danger);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .half-width {
+                grid-column: span 12;
+            }
+            .third-width {
+                grid-column: span 6;
+            }
+            .two-thirds {
+                grid-column: span 12;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                width: 0;
+                padding: 0;
+                overflow: hidden;
+            }
+            .sidebar.active {
+                width: 250px;
+                padding: 20px;
+            }
+            .main-content {
+                grid-column: 1;
+                padding: 20px;
+            }
+            .third-width {
+                grid-column: span 12;
+            }
+            .mobile-toggle {
+                display: block;
+            }
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .timeline::after {
+                left: 31px;
+            }
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-item.right {
+                left: 0;
+            }
+            .timeline-item.left::after, .timeline-item.right::after {
+                left: 20px;
+            }
+            .timeline-item.left .timeline-content::after {
+                border-color: transparent transparent transparent white;
+                right: auto;
+                left: -20px;
+            }
+        }
+
+        /* Toggle Button */
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--dark);
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+
+        /* Loader */
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s;
+        }
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--accent);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--dark) transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        /* Print Styles */
+        @media print {
+            .sidebar, .mobile-toggle, .chart-actions, .date-filter {
+                display: none !important;
+            }
+            .dashboard {
+                display: block;
+            }
+            .main-content {
+                padding: 0;
+                margin: 0;
+            }
+            .chart-container, .kpi-card, .recommendations {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                box-shadow: none !important;
+            }
+            body {
+                background: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loader -->
+    <div class="loader-container" id="loader">
+        <div class="loader"></div>
+    </div>
+
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-balance-scale"></i>
+                    <span>MPDFT</span>
+                </div>
+                <button id="closeSidebar" class="chart-action">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a class="nav-link active" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-section="comparativo">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Análise Comparativa</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-section="cpjpa">
+                        <i class="fas fa-check-circle"></i>
+                        <span>CPJPA (Paranoá)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-section="cpjre">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>CPJRE (R. das Emas)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-section="cpjsa">
+                        <i class="fas fa-sync"></i>
+                        <span>CPJSA (Samambaia)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-section="recomendacoes">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>Recomendações</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-section="plano">
+                        <i class="fas fa-tasks"></i>
+                        <span>Plano de Ação</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" id="main-content">
+            <div class="page-header">
+                <button id="toggleSidebar" class="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title" id="page-title">Dashboard Executivo - Análise de Gargalos</h1>
+                <div class="date-filter">
+                    <i class="far fa-calendar-alt" style="margin-right: 10px;"></i>
+                    <select id="periodFilter">
+                        <option value="2025-q1">1º Trimestre 2025</option>
+                        <option value="2024-q4">4º Trimestre 2024</option>
+                        <option value="2024-q3">3º Trimestre 2024</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section active">
+                <!-- KPI Cards -->
+                <div class="kpi-cards">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Percepção Média de Sobrecarga</div>
+                            <div class="kpi-icon danger">
+                                <i class="fas fa-weight-hanging"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">58.6%</div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>5.2% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Demandas Urgentes</div>
+                            <div class="kpi-icon warning">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">64.9%</div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>3.7% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Receio de Afastamentos</div>
+                            <div class="kpi-icon warning">
+                                <i class="fas fa-user-clock"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">62.1%</div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>4.5% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Uso de Ferramentas Oficiais</div>
+                            <div class="kpi-icon info">
+                                <i class="fas fa-tools"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">43%</div>
+                        <div class="kpi-trend down">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>2.3% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Grid -->
+                <div class="dashboard-grid">
+                    <!-- Radar Chart -->
+                    <div class="chart-container half-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Análise Comparativa por Eixos</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Comparação dos 4 eixos de análise entre as coordenadorias</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-content">
+                            <canvas id="radarChartCanvas"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Bar Chart -->
+                    <div class="chart-container half-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Percepção de Sobrecarga por Coordenadoria</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Índices gerais de percepção de sobrecarga</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-content">
+                            <canvas id="barChartCanvas"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Doughnut Chart -->
+                    <div class="chart-container half-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Distribuição de Gargalos por Eixo</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Distribuição percentual dos gargalos identificados por eixo de análise</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-content">
+                            <canvas id="doughnutChartCanvas"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Line Chart -->
+                    <div class="chart-container half-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Evolução Temporal - Percepção de Sobrecarga</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Evolução da percepção de sobrecarga nos últimos 4 trimestres</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-content">
+                            <canvas id="lineChartCanvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Comparative Analysis Section -->
+            <section id="comparativo" class="section">
+                <div class="kpi-cards">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Média Processos e Organização</div>
+                            <div class="kpi-icon danger">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">64.9%</div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>6.3% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Média Qualidade de Vida</div>
+                            <div class="kpi-icon warning">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">62.1%</div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>4.8% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Média Gestão</div>
+                            <div class="kpi-icon warning">
+                                <i class="fas fa-users-cog"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">56.7%</div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>3.2% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Média Tecnologia da Informação</div>
+                            <div class="kpi-icon warning">
+                                <i class="fas fa-laptop-code"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">51.4%</div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>2.1% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Heat Map -->
+                    <div class="chart-container full-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Mapa de Calor - Critérios Críticos</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Visualização dos critérios mais críticos por coordenadoria</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-content">
+                            <canvas id="heatmapChartCanvas"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Comparative Table -->
+                    <div class="chart-container full-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Comparativo de Indicadores Críticos</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Tabela comparativa dos indicadores mais críticos</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Critério</th>
+                                    <th>CPJPA</th>
+                                    <th>CPJRE</th>
+                                    <th>CPJSA</th>
+                                    <th>Média</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Demandas Urgentes</td>
+                                    <td>36%</td>
+                                    <td>85.7%</td>
+                                    <td>73%</td>
+                                    <td>64.9%</td>
+                                    <td><span class="status-badge danger">Crítico</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Receio de Afastamentos</td>
+                                    <td>45%</td>
+                                    <td>64.3%</td>
+                                    <td>77%</td>
+                                    <td>62.1%</td>
+                                    <td><span class="status-badge danger">Crítico</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Acúmulo de Responsabilidades</td>
+                                    <td>N/D</td>
+                                    <td>71.4%</td>
+                                    <td>73%</td>
+                                    <td>72.2%</td>
+                                    <td><span class="status-badge danger">Crítico</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Trabalho Fora do Expediente</td>
+                                    <td>45%</td>
+                                    <td>50%</td>
+                                    <td>68%</td>
+                                    <td>54.3%</td>
+                                    <td><span class="status-badge warning">Atenção</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Sistemas Desatualizados</td>
+                                    <td>N/D</td>
+                                    <td>64.3%</td>
+                                    <td>41%</td>
+                                    <td>52.7%</td>
+                                    <td><span class="status-badge warning">Atenção</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Interrupções Frequentes</td>
+                                    <td>45%</td>
+                                    <td>50%</td>
+                                    <td>55%</td>
+                                    <td>50%</td>
+                                    <td><span class="status-badge warning">Atenção</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Organização Insatisfatória</td>
+                                    <td>N/D</td>
+                                    <td>80%</td>
+                                    <td>N/D</td>
+                                    <td>80%</td>
+                                    <td><span class="status-badge danger">Crítico</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Substituição de Memros</td>
+                                    <td>N/D</td>
+                                    <td>60%</td>
+                                    <td>N/D</td>
+                                    <td>60%</td>
+                                    <td><span class="status-badge warning">Atenção</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Tarefas Fora da Atribuição</td>
+                                    <td>43%</td>
+                                    <td>50%</td>
+                                    <td>N/D</td>
+                                    <td>46.5%</td>
+                                    <td><span class="status-badge warning">Atenção</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Dificuldade Marcação Férias</td>
+                                    <td>N/D</td>
+                                    <td>66.7%</td>
+                                    <td>N/D</td>
+                                    <td>66.7%</td>
+                                    <td><span class="status-badge danger">Crítico</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Padrões Comportamentais -->
+                    <div class="chart-container full-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Padrões Comportamentais Identificados</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Padrões comportamentais comuns identificados nas três coordenadorias</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="recommendation-cards">
+                                <div class="recommendation-card">
+                                    <h3 class="recommendation-title"><i class="fas fa-user-shield" style="margin-right: 10px; color: var(--danger);"></i>Síndrome do Herói</h3>
+                                    <p class="recommendation-desc">Servidores trabalham mesmo doentes ou em condições inadequadas, priorizando o trabalho em detrimento da própria saúde.</p>
+                                </div>
+                                <div class="recommendation-card">
+                                    <h3 class="recommendation-title"><i class="fas fa-comment-dots" style="margin-right: 10px; color: var(--warning);"></i>Comunicação Informal</h3>
+                                    <p class="recommendation-desc">Preferência pelo uso do WhatsApp em vez das ferramentas oficiais, gerando problemas de segurança e sobrecarga.</p>
+                                </div>
+                                <div class="recommendation-card">
+                                    <h3 class="recommendation-title"><i class="fas fa-fire-extinguisher" style="margin-right: 10px; color: var(--danger);"></i>Gestão Reativa</h3>
+                                    <p class="recommendation-desc">Foco excessivo em urgências em detrimento do planejamento estratégico e da organização dos processos.</p>
+                                </div>
+                                <div class="recommendation-card">
+                                    <h3 class="recommendation-title"><i class="fas fa-hands-helping" style="margin-right: 10px; color: var(--warning);"></i>Solidariedade Excessiva</h3>
+                                    <p class="recommendation-desc">Receio de afastamentos por não querer sobrecarregar colegas, gerando ciclo de estresse e adoecimento.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CPJPA Section -->
+            <section id="cpjpa" class="section">
+                <div class="kpi-cards">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Percepção Geral de Sobrecarga</div>
+                            <div class="kpi-icon success">
+                                <i class="fas fa-weight-hanging"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">28%</div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>1.2% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Demandas Urgentes</div>
+                            <div class="kpi-icon success">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">36%</div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>2.1% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Receio de Afastamentos</div>
+                            <div class="kpi-icon warning">
+                                <i class="fas fa-user-clock"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">45%</div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>3.5% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Uso de Ferramentas Oficiais</div>
+                            <div class="kpi-icon success">
+                                <i class="fas fa-tools"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">64%</div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>5.2% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Pontos Fortes -->
+                    <div class="chart-container half-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Pontos Fortes Únicos</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Pontos fortes identificados na CPJPA</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="recommendation-cards">
+                                <div class="recommendation-card" style="border-left-color: var(--success);">
+                                    <h3 class="recommendation-title"><i class="fas fa-users" style="margin-right: 10px; color: var(--success);"></i>Liderança Exemplar</h3>
+                                    <p class="recommendation-desc">Engajamento total da equipe com liderança participativa e motivadora.</p>
+                                </div>
+                                <div class="recommendation-card" style="border-left-color: var(--success);">
+                                    <h3 class="recommendation-title"><i class="fas fa-sitemap" style="margin-right: 10px; color: var(--success);"></i>Organização Eficiente</h3>
+                                    <p class="recommendation-desc">Processos de trabalho bem estruturados e fluxos claramente definidos.</p>
+                                </div>
+                                <div class="recommendation-card" style="border-left-color: var(--success);">
+                                    <h3 class="recommendation-title"><i class="fas fa-smile" style="margin-right: 10px; color: var(--success);"></i>Clima Organizacional</h3>
+                                    <p class="recommendation-desc">Ambiente harmonioso e colaborativo com baixo nível de conflitos.</p>
+                                </div>
+                                <div class="recommendation-card" style="border-left-color: var(--success);">
+                                    <h3 class="recommendation-title"><i class="fas fa-laptop-code" style="margin-right: 10px; color: var(--success);"></i>Competência Técnica</h3>
+                                    <p class="recommendation-desc">Elevado domínio dos sistemas de informação e ferramentas institucionais.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Desafios -->
+                    <div class="chart-container half-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Desafios Específicos</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Desafios específicos da CPJPA</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="recommendation-cards">
+                                <div class="recommendation-card" style="border-left-color: var(--warning);">
+                                    <h3 class="recommendation-title"><i class="fas fa-question-circle" style="margin-right: 10px; color: var(--warning);"></i>Incompreensão sobre Avaliação</h3>
+                                    <p class="recommendation-desc">Falta de clareza sobre o propósito e os critérios da avaliação de desempenho.</p>
+                                </div>
+                                <div class="recommendation-card" style="border-left-color: var(--warning);">
+                                    <h3 class="recommendation-title"><i class="fas fa-clock" style="margin-right: 10px; color: var(--warning);"></i>Trabalho Fora do Expediente</h3>
+                                    <p class="recommendation-desc">71% dos servidores do Cartório relatam trabalho fora do horário regular.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Análise por Subunidade -->
+                    <div class="chart-container full-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Análise por Subunidade</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Análise detalhada por subunidade da CPJPA</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="dashboard-grid">
+                                <div class="third-width">
+                                    <h3 style="margin-bottom: 15px;">Cartório</h3>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Trabalho fora do expediente</span>
+                                            <span>71%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 71%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Baixo uso ferramentas oficiais</span>
+                                            <span>57.2%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill warning" style="width: 57.2%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Receio de afastamentos</span>
+                                            <span>42.9%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill warning" style="width: 42.9%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="third-width">
+                                    <h3 style="margin-bottom: 15px;">SEMA</h3>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Percepção geral de sobrecarga</span>
+                                            <span>28%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill success" style="width: 28%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Receio de afastamentos</span>
+                                            <span>45%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill warning" style="width: 45%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Demandas urgentes</span>
+                                            <span>36%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill success" style="width: 36%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="third-width">
+                                    <h3 style="margin-bottom: 15px;">SECAD</h3>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Percepção geral de sobrecarga</span>
+                                            <span>19%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill success" style="width: 19%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Demandas urgentes</span>
+                                            <span>36%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill success" style="width: 36%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Sistemas desatualizados</span>
+                                            <span>19%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill success" style="width: 19%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Estratégia Recomendada -->
+                    <div class="chart-container full-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Estratégia Recomendada</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Estratégias recomendadas para a CPJPA</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="recommendation-cards">
+                                <div class="recommendation-card">
+                                    <h3 class="recommendation-title"><i class="fas fa-award" style="margin-right: 10px; color: var(--success);"></i>Centro de Excelência</h3>
+                                    <p class="recommendation-desc">Consolidar a CPJPA como centro de excelência e referência para as demais coordenadorias, documentando e compartilhando suas boas práticas.</p>
+                                </div>
+                                <div class="recommendation-card">
+                                    <h3 class="recommendation-title"><i class="fas fa-share-alt" style="margin-right: 10px; color: var(--success);"></i>Compartilhamento de Boas Práticas</h3>
+                                    <p class="recommendation-desc">Implementar programa de intercâmbio e mentoria entre a CPJPA e as demais coordenadorias para transferência de conhecimento.</p>
+                                </div>
+                                <div class="recommendation-card">
+                                    <h3 class="recommendation-title"><i class="fas fa-comments" style="margin-right: 10px; color: var(--warning);"></i>Comunicação sobre Avaliação</h3>
+                                    <p class="recommendation-desc">Realizar workshops e reuniões de feedback para esclarecer o propósito e os critérios da avaliação de desempenho.</p>
+                                </div>
+                                <div class="recommendation-card">
+                                    <h3 class="recommendation-title"><i class="fas fa-clock" style="margin-right: 10px; color: var(--warning);"></i>Limites de Horário</h3>
+                                    <p class="recommendation-desc">Estabelecer limites claros para trabalho fora do expediente, com monitoramento e intervenção da gestão quando necessário.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CPJRE Section -->
+            <section id="cpjre" class="section">
+                <div class="kpi-cards">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Percepção Geral de Sobrecarga</div>
+                            <div class="kpi-icon danger">
+                                <i class="fas fa-weight-hanging"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">65.2%</div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>7.3% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Demandas Urgentes</div>
+                            <div class="kpi-icon danger">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">85.7%</div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>6.2% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Receio de Afastamentos</div>
+                            <div class="kpi-icon danger">
+                                <i class="fas fa-user-clock"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">64.3%</div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>5.8% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Uso de Ferramentas Oficiais</div>
+                            <div class="kpi-icon warning">
+                                <i class="fas fa-tools"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">50%</div>
+                        <div class="kpi-trend down">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>3.5% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Desafios Críticos -->
+                    <div class="chart-container half-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Desafios Críticos</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Desafios críticos identificados na CPJRE</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="recommendation-cards">
+                                <div class="recommendation-card" style="border-left-color: var(--danger);">
+                                    <h3 class="recommendation-title"><i class="fas fa-map-marker-alt" style="margin-right: 10px; color: var(--danger);"></i>Divisão Geográfica</h3>
+                                    <p class="recommendation-desc">Coordenadoria localizada em duas cidades diferentes, gerando fragmentação e dificuldades de gestão.</p>
+                                </div>
+                                <div class="recommendation-card" style="border-left-color: var(--danger);">
+                                    <h3 class="recommendation-title"><i class="fas fa-exclamation-triangle" style="margin-right: 10px; color: var(--danger);"></i>Demandas Urgentes Críticas</h3>
+                                    <p class="recommendation-desc">85,7% dos servidores relatam alta frequência de demandas urgentes, o maior índice entre as coordenadorias.</p>
+                                </div>
+                                <div class="recommendation-card" style="border-left-color: var(--danger);">
+                                    <h3 class="recommendation-title"><i class="fas fa-random" style="margin-right: 10px; color: var(--danger);"></i>Inconsistência na Execução</h3>
+                                    <p class="recommendation-desc">Falta de padronização na execução de modelos, especialmente no Cartório e SEMA.</p>
+                                </div>
+                                <div class="recommendation-card" style="border-left-color: var(--danger);">
+                                    <h3 class="recommendation-title"><i class="fas fa-laptop-code" style="margin-right: 10px; color: var(--danger);"></i>Limitações Sistêmicas</h3>
+                                    <p class="recommendation-desc">Funcionamento limitado de sistemas específicos como Neogab e SMA, impactando a produtividade.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Impactos Mensurados -->
+                    <div class="chart-container half-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Impactos Mensurados</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Impactos mensurados na CPJRE</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="recommendation-cards">
+                                <div class="recommendation-card" style="border-left-color: var(--danger);">
+                                    <h3 class="recommendation-title"><i class="fas fa-chart-pie" style="margin-right: 10px; color: var(--danger);"></i>Cartório - 100% Urgências</h3>
+                                    <p class="recommendation-desc">100% dos respondentes do Cartório relatam alta frequência de demandas urgentes.</p>
+                                </div>
+                                <div class="recommendation-card" style="border-left-color: var(--danger);">
+                                    <h3 class="recommendation-title"><i class="fas fa-user-clock" style="margin-right: 10px; color: var(--danger);"></i>83,3% Receio de Afastamentos</h3>
+                                    <p class="recommendation-desc">83,3% dos servidores apresentam receio extremo de afastamentos, mesmo quando necessários.</p>
+                                </div>
+                                <div class="recommendation-card" style="border-left-color: var(--danger);">
+                                    <h3 class="recommendation-title"><i class="fas fa-balance-scale-left" style="margin-right: 10px; color: var(--danger);"></i>Desequilíbrio na Distribuição</h3>
+                                    <p class="recommendation-desc">66,7% relatam desequilíbrio na distribuição do trabalho entre os servidores.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Análise por Subunidade -->
+                    <div class="chart-container full-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Análise por Subunidade</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Análise detalhada por subunidade da CPJRE</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="dashboard-grid">
+                                <div class="third-width">
+                                    <h3 style="margin-bottom: 15px;">Cartório</h3>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Demandas urgentes</span>
+                                            <span>100%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Receio de afastamentos</span>
+                                            <span>83.3%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 83.3%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Acúmulo de responsabilidades</span>
+                                            <span>100%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="third-width">
+                                    <h3 style="margin-bottom: 15px;">SEMA</h3>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Estrutura física inadequada</span>
+                                            <span>100%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Sistemas desatualizados</span>
+                                            <span>75%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 75%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Pressão e ansiedade</span>
+                                            <span>75%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 75%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="third-width">
+                                    <h3 style="margin-bottom: 15px;">Setor de Diligências</h3>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Demandas urgentes</span>
+                                            <span>100%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Organização insatisfatória</span>
+                                            <span>80%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 80%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Sistemas desatualizados</span>
+                                            <span>100%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Estratégia Recomendada -->
+                    <div class="chart-container full-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Estratégia Recomendada</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Estratégias recomendadas para a CPJRE</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="recommendation-cards">
+                                <div class="recommendation-card high">
+                                    <span class="recommendation-priority high">Alta Prioridade</span>
+                                    <h3 class="recommendation-title">Integração Geográfica Urgente</h3>
+                                    <p class="recommendation-desc">Unificar a estrutura física da CPJRE, atualmente dividida em duas cidades, para melhorar a gestão, comunicação e distribuição de trabalho.</p>
+                                    <div class="recommendation-impact">
+                                        <span class="impact-label">Impacto:</span>
+                                        <div class="impact-bar">
+                                            <div class="impact-value high"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="recommendation-card high">
+                                    <span class="recommendation-priority high">Alta Prioridade</span>
+                                    <h3 class="recommendation-title">Revisão Completa dos Fluxos</h3>
+                                    <p class="recommendation-desc">Mapear e redesenhar todos os fluxos de trabalho, com foco na padronização e na redução de inconsistências na execução de modelos.</p>
+                                    <div class="recommendation-impact">
+                                        <span class="impact-label">Impacto:</span>
+                                        <div class="impact-bar">
+                                            <div class="impact-value high"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="recommendation-card high">
+                                    <span class="recommendation-priority high">Alta Prioridade</span>
+                                    <h3 class="recommendation-title">Investimento Tecnológico Prioritário</h3>
+                                    <p class="recommendation-desc">Priorizar a atualização dos sistemas Neogab e SMA, além da modernização dos equipamentos de informática da unidade.</p>
+                                    <div class="recommendation-impact">
+                                        <span class="impact-label">Impacto:</span>
+                                        <div class="impact-bar">
+                                            <div class="impact-value high"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="recommendation-card medium">
+                                    <span class="recommendation-priority medium">Média Prioridade</span>
+                                    <h3 class="recommendation-title">Sistema de Classificação de Urgências</h3>
+                                    <p class="recommendation-desc">Implementar sistema objetivo de classificação de demandas por nível de urgência, com critérios claros e transparentes.</p>
+                                    <div class="recommendation-impact">
+                                        <span class="impact-label">Impacto:</span>
+                                        <div class="impact-bar">
+                                            <div class="impact-value medium"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CPJSA Section -->
+            <section id="cpjsa" class="section">
+                <div class="kpi-cards">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Percepção Geral de Sobrecarga</div>
+                            <div class="kpi-icon warning">
+                                <i class="fas fa-weight-hanging"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">58.8%</div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>4.8% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Demandas Urgentes</div>
+                            <div class="kpi-icon danger">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">73%</div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>5.2% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Receio de Afastamentos</div>
+                            <div class="kpi-icon danger">
+                                <i class="fas fa-user-clock"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">77%</div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>6.3% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Acúmulo de Responsabilidades</div>
+                            <div class="kpi-icon danger">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">73%</div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>4.1% vs. trimestre anterior</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Características Específicas -->
+                    <div class="chart-container half-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Características Específicas</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Características específicas da CPJSA</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="recommendation-cards">
+                                <div class="recommendation-card" style="border-left-color: var(--warning);">
+                                    <h3 class="recommendation-title"><i class="fas fa-procedures" style="margin-right: 10px; color: var(--warning);"></i>Afastamentos Acima da Média</h3>
+                                    <p class="recommendation-desc">Índice de afastamentos superior à média institucional do MPDFT.</p>
+                                </div>
+                                <div class="recommendation-card" style="border-left-color: var(--warning);">
+                                    <h3 class="recommendation-title"><i class="fas fa-comment-slash" style="margin-right: 10px; color: var(--warning);"></i>Comunicação Ineficiente</h3>
+                                    <p class="recommendation-desc">Falhas na comunicação entre as diferentes subunidades da coordenadoria.</p>
+                                </div>
+                                <div class="recommendation-card" style="border-left-color: var(--warning);">
+                                    <h3 class="recommendation-title"><i class="fas fa-random" style="margin-right: 10px; color: var(--warning);"></i>Falta de Uniformidade</h3>
+                                    <p class="recommendation-desc">Ausência de padronização nos fluxos de trabalho entre as subunidades.</p>
+                                </div>
+                                <div class="recommendation-card" style="border-left-color: var(--warning);">
+                                    <h3 class="recommendation-title"><i class="fas fa-building" style="margin-right: 10px; color: var(--warning);"></i>Estrutura Predial Inadequada</h3>
+                                    <p class="recommendation-desc">Instalações físicas inadequadas para o SEMA e o Setor de Diligências.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Indicadores Preocupantes -->
+                    <div class="chart-container half-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Indicadores Preocupantes</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Indicadores preocupantes da CPJSA</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="recommendation-cards">
+                                <div class="recommendation-card" style="border-left-color: var(--danger);">
+                                    <h3 class="recommendation-title"><i class="fas fa-user-clock" style="margin-right: 10px; color: var(--danger);"></i>77% Receio de Afastamentos</h3>
+                                    <p class="recommendation-desc">O maior índice entre as coordenadorias, indicando cultura de evitação de afastamentos mesmo quando necessários.</p>
+                                </div>
+                                <div class="recommendation-card" style="border-left-color: var(--danger);">
+                                    <h3 class="recommendation-title"><i class="fas fa-tasks" style="margin-right: 10px; color: var(--danger);"></i>73% Acúmulo de Responsabilidades</h3>
+                                    <p class="recommendation-desc">Alta percepção de sobrecarga devido ao acúmulo de responsabilidades pelos servidores.</p>
+                                </div>
+                                <div class="recommendation-card" style="border-left-color: var(--danger);">
+                                    <h3 class="recommendation-title"><i class="fas fa-user-minus" style="margin-right: 10px; color: var(--danger);"></i>Aposentadoria Prevista</h3>
+                                    <p class="recommendation-desc">Aposentadoria iminente de servidora do Cartório gerando instabilidade e preocupação na equipe.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Análise por Subunidade -->
+                    <div class="chart-container full-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Análise por Subunidade</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Análise detalhada por subunidade da CPJSA</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="dashboard-grid">
+                                <div class="third-width">
+                                    <h3 style="margin-bottom: 15px;">Cartório</h3>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Receio de afastamentos</span>
+                                            <span>91%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 91%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Acúmulo de responsabilidades</span>
+                                            <span>73%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 73%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Pressão e ansiedade</span>
+                                            <span>64%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 64%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="third-width">
+                                    <h3 style="margin-bottom: 15px;">SEMA</h3>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Demandas fora do expediente</span>
+                                            <span>100%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Demandas urgentes</span>
+                                            <span>100%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Acúmulo de responsabilidades</span>
+                                            <span>100%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="third-width">
+                                    <h3 style="margin-bottom: 15px;">Setor de Diligências</h3>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Demandas urgentes</span>
+                                            <span>100%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Receio de afastamentos</span>
+                                            <span>75%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 75%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Dificuldade marcação férias</span>
+                                            <span>75%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 75%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Estratégia Recomendada -->
+                    <div class="chart-container full-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Estratégia Recomendada</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Estratégias recomendadas para a CPJSA</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="recommendation-cards">
+                                <div class="recommendation-card high">
+                                    <span class="recommendation-priority high">Alta Prioridade</span>
+                                    <h3 class="recommendation-title">Reestruturação dos Fluxos de Comunicação</h3>
+                                    <p class="recommendation-desc">Redesenhar os canais e processos de comunicação entre as subunidades, com foco na centralização e padronização.</p>
+                                    <div class="recommendation-impact">
+                                        <span class="impact-label">Impacto:</span>
+                                        <div class="impact-bar">
+                                            <div class="impact-value high"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="recommendation-card high">
+                                    <span class="recommendation-priority high">Alta Prioridade</span>
+                                    <h3 class="recommendation-title">Planejamento Sucessório Urgente</h3>
+                                    <p class="recommendation-desc">Desenvolver plano de transição para a aposentadoria prevista, incluindo redistribuição de atividades e capacitação da equipe.</p>
+                                    <div class="recommendation-impact">
+                                        <span class="impact-label">Impacto:</span>
+                                        <div class="impact-bar">
+                                            <div class="impact-value high"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="recommendation-card medium">
+                                    <span class="recommendation-priority medium">Média Prioridade</span>
+                                    <h3 class="recommendation-title">Melhoria da Infraestrutura Física</h3>
+                                    <p class="recommendation-desc">Adequar as instalações do SEMA para garantir privacidade no atendimento ao público e melhorar as condições do Setor de Diligências.</p>
+                                    <div class="recommendation-impact">
+                                        <span class="impact-label">Impacto:</span>
+                                        <div class="impact-bar">
+                                            <div class="impact-value medium"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="recommendation-card medium">
+                                    <span class="recommendation-priority medium">Média Prioridade</span>
+                                    <h3 class="recommendation-title">Programa de Conscientização sobre Afastamentos</h3>
+                                    <p class="recommendation-desc">Implementar campanha de conscientização sobre a importância dos afastamentos para a saúde e o bem-estar da equipe.</p>
+                                    <div class="recommendation-impact">
+                                        <span class="impact-label">Impacto:</span>
+                                        <div class="impact-bar">
+                                            <div class="impact-value medium"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recomendações Section -->
+            <section id="recomendacoes" class="section">
+                <div class="kpi-cards">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Recomendações de Alta Prioridade</div>
+                            <div class="kpi-icon danger">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">6</div>
+                        <div class="kpi-trend">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Impacto estimado: 60% redução</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Recomendações de Média Prioridade</div>
+                            <div class="kpi-icon warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">8</div>
+                        <div class="kpi-trend">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Impacto estimado: 40% redução</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Recomendações de Baixa Prioridade</div>
+                            <div class="kpi-icon success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">5</div>
+                        <div class="kpi-trend">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Impacto estimado: 20% redução</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Tempo Estimado de Implementação</div>
+                            <div class="kpi-icon info">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">24 meses</div>
+                        <div class="kpi-trend">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Implementação gradual</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Intervenções Imediatas -->
+                    <div class="chart-container half-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Nível 1: Intervenções Imediatas (0-3 meses)</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Intervenções que podem ser implementadas em até 3 meses</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="recommendation-cards">
+                                <div class="recommendation-card high">
+                                    <span class="recommendation-priority high">Alta Prioridade</span>
+                                    <h3 class="recommendation-title">Limites para Trabalho Fora do Expediente</h3>
+                                    <p class="recommendation-desc">Estabelecer limites claros e formais para o trabalho fora do horário de expediente, com monitoramento e intervenção da gestão.</p>
+                                </div>
+                                <div class="recommendation-card high">
+                                    <span class="recommendation-priority high">Alta Prioridade</span>
+                                    <h3 class="recommendation-title">Sistema de Classificação de Urgências</h3>
+                                    <p class="recommendation-desc">Implementar sistema objetivo de classificação de demandas por nível de urgência, com critérios claros e transparentes.</p>
+                                </div>
+                                <div class="recommendation-card medium">
+                                    <span class="recommendation-priority medium">Média Prioridade</span>
+                                    <h3 class="recommendation-title">Campanhas de Autocuidado</h3>
+                                    <p class="recommendation-desc">Promover campanhas de conscientização sobre a importância do autocuidado e dos afastamentos quando necessários.</p>
+                                </div>
+                                <div class="recommendation-card medium">
+                                    <span class="recommendation-priority medium">Média Prioridade</span>
+                                    <h3 class="recommendation-title">Protocolos de Substituição</h3>
+                                    <p class="recommendation-desc">Definir protocolos claros para substituição em casos de afastamentos, com distribuição equitativa das atividades.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mudanças Estruturais -->
+                    <div class="chart-container half-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Nível 2: Mudanças Estruturais (3-12 meses)</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Mudanças estruturais a serem implementadas em médio prazo</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="recommendation-cards">
+                                <div class="recommendation-card high">
+                                    <span class="recommendation-priority high">Alta Prioridade</span>
+                                    <h3 class="recommendation-title">Redistribuição de Servidores</h3>
+                                    <p class="recommendation-desc">Reorganizar a distribuição de servidores entre setores críticos (ANPP, SEMA) para equilibrar a carga de trabalho.</p>
+                                </div>
+                                <div class="recommendation-card high">
+                                    <span class="recommendation-priority high">Alta Prioridade</span>
+                                    <h3 class="recommendation-title">Padronização de Fluxos</h3>
+                                    <p class="recommendation-desc">Mapear e padronizar todos os fluxos de trabalho, com documentação clara e treinamento das equipes.</p>
+                                </div>
+                                <div class="recommendation-card medium">
+                                    <span class="recommendation-priority medium">Média Prioridade</span>
+                                    <h3 class="recommendation-title">Modernização de Equipamentos</h3>
+                                    <p class="recommendation-desc">Atualizar equipamentos obsoletos e sistemas desatualizados, priorizando as áreas mais críticas.</p>
+                                </div>
+                                <div class="recommendation-card high">
+                                    <span class="recommendation-priority high">Alta Prioridade</span>
+                                    <h3 class="recommendation-title">Integração Geográfica CPJRE</h3>
+                                    <p class="recommendation-desc">Unificar a estrutura física da CPJRE, atualmente dividida em duas cidades, para melhorar a gestão e comunicação.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transformação Cultural -->
+                    <div class="chart-container full-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Nível 3: Transformação Cultural (6-24 meses)</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Transformações culturais de longo prazo</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="recommendation-cards">
+                                <div class="recommendation-card medium">
+                                    <span class="recommendation-priority medium">Média Prioridade</span>
+                                    <h3 class="recommendation-title">Programa de Desenvolvimento de Lideranças</h3>
+                                    <p class="recommendation-desc">Implementar programa contínuo de desenvolvimento de lideranças, com foco em gestão de pessoas e processos.</p>
+                                </div>
+                                <div class="recommendation-card medium">
+                                    <span class="recommendation-priority medium">Média Prioridade</span>
+                                    <h3 class="recommendation-title">Sistema de Feedback Contínuo</h3>
+                                    <p class="recommendation-desc">Estabelecer sistema de feedback contínuo e estruturado, com avaliações periódicas e planos de desenvolvimento.</p>
+                                </div>
+                                <div class="recommendation-card low">
+                                    <span class="recommendation-priority low">Baixa Prioridade</span>
+                                    <h3 class="recommendation-title">Política de Bem-Estar</h3>
+                                    <p class="recommendation-desc">Desenvolver política institucional de bem-estar dos servidores, com ações preventivas e de promoção da saúde.</p>
+                                </div>
+                                <div class="recommendation-card low">
+                                    <span class="recommendation-priority low">Baixa Prioridade</span>
+                                    <h3 class="recommendation-title">Centro de Excelência</h3>
+                                    <p class="recommendation-desc">Estabelecer a CPJPA como centro de excelência para compartilhamento de boas práticas com outras coordenadorias.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recomendações Avançadas -->
+                    <div class="chart-container full-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Recomendações Estratégicas Avançadas</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Recomendações estratégicas de longo prazo</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="recommendation-cards">
+                                <div class="recommendation-card">
+                                    <h3 class="recommendation-title"><i class="fas fa-graduation-cap" style="margin-right: 10px; color: var(--accent);"></i>Gestão por Processos</h3>
+                                    <p class="recommendation-desc">Implementar metodologia completa de gestão por processos, com mapeamento, automação e indicadores em tempo real.</p>
+                                </div>
+                                <div class="recommendation-card">
+                                    <h3 class="recommendation-title"><i class="fas fa-heart" style="margin-right: 10px; color: var(--accent);"></i>Programa de Bem-Estar Organizacional</h3>
+                                    <p class="recommendation-desc">Desenvolver programa abrangente de bem-estar, incluindo flexibilização de horários, saúde mental e atividades de integração.</p>
+                                </div>
+                                <div class="recommendation-card">
+                                    <h3 class="recommendation-title"><i class="fas fa-robot" style="margin-right: 10px; color: var(--accent);"></i>Modernização Tecnológica Completa</h3>
+                                    <p class="recommendation-desc">Implementar plataforma integrada de gestão, aplicativo móvel para comunicação e sistema de IA para triagem de demandas.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Plano de Ação Section -->
+            <section id="plano" class="section">
+                <div class="kpi-cards">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Ações Imediatas</div>
+                            <div class="kpi-icon danger">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">12</div>
+                        <div class="kpi-trend">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Prazo: 3 meses</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Ações de Médio Prazo</div>
+                            <div class="kpi-icon warning">
+                                <i class="fas fa-hourglass-half"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">16</div>
+                        <div class="kpi-trend">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Prazo: 12 meses</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Ações de Longo Prazo</div>
+                            <div class="kpi-icon info">
+                                <i class="fas fa-hourglass-end"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">8</div>
+                        <div class="kpi-trend">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Prazo: 24 meses</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-title">Redução Estimada de Sobrecarga</div>
+                            <div class="kpi-icon success">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">40%</div>
+                        <div class="kpi-trend">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Cenário realista</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Timeline -->
+                    <div class="chart-container full-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Cronograma de Implementação</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Cronograma de implementação das ações</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="timeline">
+                                <div class="timeline-item left">
+                                    <div class="timeline-content">
+                                        <h3>Fase 1: Intervenções Imediatas</h3>
+                                        <p><strong>Período:</strong> Mês 1-3</p>
+                                        <p><strong>Foco:</strong> Estabelecimento de limites para trabalho fora do expediente, sistema de classificação de urgências, campanhas de autocuidado.</p>
+                                        <p><strong>Responsáveis:</strong> Coordenadorias</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item right">
+                                    <div class="timeline-content">
+                                        <h3>Fase 2: Mudanças Estruturais</h3>
+                                        <p><strong>Período:</strong> Mês 3-12</p>
+                                        <p><strong>Foco:</strong> Redistribuição de servidores, padronização de fluxos, modernização de equipamentos, integração geográfica da CPJRE.</p>
+                                        <p><strong>Responsáveis:</strong> API, STI, Coordenadorias</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item left">
+                                    <div class="timeline-content">
+                                        <h3>Fase 3: Transformação Cultural</h3>
+                                        <p><strong>Período:</strong> Mês 6-24</p>
+                                        <p><strong>Foco:</strong> Programa de desenvolvimento de lideranças, sistema de feedback contínuo, política de bem-estar, centro de excelência.</p>
+                                        <p><strong>Responsáveis:</strong> Secor, API, Coordenadorias</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item right">
+                                    <div class="timeline-content">
+                                        <h3>Fase 4: Avaliação e Ajustes</h3>
+                                        <p><strong>Período:</strong> Mês 24-30</p>
+                                        <p><strong>Foco:</strong> Avaliação dos resultados, ajustes nas estratégias, consolidação das mudanças, planejamento de longo prazo.</p>
+                                        <p><strong>Responsáveis:</strong> Administração Superior, Secor</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Responsabilidades -->
+                    <div class="chart-container half-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Responsabilidades das Coordenadorias</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Responsabilidades atribuídas às coordenadorias</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="recommendation-cards">
+                                <div class="recommendation-card">
+                                    <h3 class="recommendation-title"><i class="fas fa-check-square" style="margin-right: 10px; color: var(--accent);"></i>Ações Imediatas</h3>
+                                    <ul style="margin-top: 10px; margin-left: 25px;">
+                                        <li>Estabelecer reuniões semanais de alinhamento</li>
+                                        <li>Criar protocolo de urgência para demandas</li>
+                                        <li>Implementar sistema de backup para afastamentos</li>
+                                        <li>Definir horários limite para comunicação</li>
+                                    </ul>
+                                </div>
+                                <div class="recommendation-card">
+                                    <h3 class="recommendation-title"><i class="fas fa-sync" style="margin-right: 10px; color: var(--accent);"></i>Ações de Médio Prazo</h3>
+                                    <ul style="margin-top: 10px; margin-left: 25px;">
+                                        <li>Reestruturar fluxos de trabalho</li>
+                                        <li>Treinar equipe em novas ferramentas</li>
+                                        <li>Estabelecer indicadores de desempenho</li>
+                                        <li>Criar programa de reconhecimento</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Responsabilidades Administração -->
+                    <div class="chart-container half-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Responsabilidades da Administração Superior</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Responsabilidades atribuídas à Administração Superior</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="recommendation-cards">
+                                <div class="recommendation-card">
+                                    <h3 class="recommendation-title"><i class="fas fa-building" style="margin-right: 10px; color: var(--accent);"></i>API</h3>
+                                    <ul style="margin-top: 10px; margin-left: 25px;">
+                                        <li>Revisar processo de substituição de membros</li>
+                                        <li>Desenvolver campanha sobre ferramentas oficiais</li>
+                                        <li>Avaliar redistribuição de pessoal</li>
+                                        <li>Melhorar infraestrutura física</li>
+                                    </ul>
+                                </div>
+                                <div class="recommendation-card">
+                                    <h3 class="recommendation-title"><i class="fas fa-laptop-code" style="margin-right: 10px; color: var(--accent);"></i>STI</h3>
+                                    <ul style="margin-top: 10px; margin-left: 25px;">
+                                        <li>Modernizar sistemas institucionais</li>
+                                        <li>Fornecer suporte técnico especializado</li>
+                                        <li>Implementar soluções de comunicação oficial</li>
+                                        <li>Atualizar equipamentos obsoletos</li>
+                                    </ul>
+                                </div>
+                                <div class="recommendation-card">
+                                    <h3 class="recommendation-title"><i class="fas fa-graduation-cap" style="margin-right: 10px; color: var(--accent);"></i>Secor</h3>
+                                    <ul style="margin-top: 10px; margin-left: 25px;">
+                                        <li>Desenvolver treinamentos específicos</li>
+                                        <li>Criar programa de capacitação continuada</li>
+                                        <li>Estabelecer sistema de avaliação de eficácia</li>
+                                        <li>Implementar metodologias de gestão moderna</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Projeção de Resultados -->
+                    <div class="chart-container full-width">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Projeção de Resultados</h2>
+                            <div class="chart-actions">
+                                <button class="chart-action tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Projeção de resultados esperados</span>
+                                </button>
+                                <button class="chart-action">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="dashboard-grid">
+                                <div class="third-width">
+                                    <h3 style="margin-bottom: 15px; color: var(--success);">Cenário Otimista</h3>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Redução de sobrecarga</span>
+                                            <span>60%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill success" style="width: 60%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Aumento de satisfação</span>
+                                            <span>80%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill success" style="width: 80%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Melhoria de eficiência</span>
+                                            <span>70%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill success" style="width: 70%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="third-width">
+                                    <h3 style="margin-bottom: 15px; color: var(--warning);">Cenário Realista</h3>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Redução de sobrecarga</span>
+                                            <span>40%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill warning" style="width: 40%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Aumento de satisfação</span>
+                                            <span>50%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill warning" style="width: 50%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Melhoria de eficiência</span>
+                                            <span>45%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill warning" style="width: 45%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="third-width">
+                                    <h3 style="margin-bottom: 15px; color: var(--danger);">Cenário Pessimista</h3>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Redução de sobrecarga</span>
+                                            <span>20%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 20%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Aumento de satisfação</span>
+                                            <span>10%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 10%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Melhoria de eficiência</span>
+                                            <span>15%</span>
+                                        </div>
+                                        <div class="progress-bar-container">
+                                            <div class="progress-bar-fill danger" style="width: 15%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Loader
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(function() {
+                    document.getElementById('loader').style.display = 'none';
+                }, 500);
+            }, 1000);
+        });
+
+        // Mobile Sidebar Toggle
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        document.getElementById('closeSidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.remove('active');
+        });
+
+        // Navigation
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('.section');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                const sectionId = this.getAttribute('data-section');
+                
+                // Update active link
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update active section
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                    if (section.id === sectionId) {
+                        section.classList.add('active');
+                        // Update page title
+                        document.getElementById('page-title').textContent = this.querySelector('span').textContent;
+                    }
+                });
+                
+                if (window.innerWidth <= 768) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            });
+        });
+
+        // Charts
+        // Radar Chart
+        const radarCtx = document.getElementById('radarChartCanvas').getContext('2d');
+        const radarChart = new Chart(radarCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Processos e Organização', 'Qualidade de Vida', 'Gestão', 'Tecnologia da Informação'],
+                datasets: [
+                    {
+                        label: 'CPJPA',
+                        data: [42, 45, 45, 36],
+                        backgroundColor: 'rgba(46, 204, 113, 0.2)',
+                        borderColor: 'rgba(46, 204, 113, 1)',
+                        pointBackgroundColor: 'rgba(46, 204, 113, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(46, 204, 113, 1)'
+                    },
+                    {
+                        label: 'CPJRE',
+                        data: [65, 64, 67, 64],
+                        backgroundColor: 'rgba(231, 76, 60, 0.2)',
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        pointBackgroundColor: 'rgba(231, 76, 60, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(231, 76, 60, 1)'
+                    },
+                    {
+                        label: 'CPJSA',
+                        data: [59, 62, 55, 41],
+                        backgroundColor: 'rgba(243, 156, 18, 0.2)',
+                        borderColor: 'rgba(243, 156, 18, 1)',
+                        pointBackgroundColor: 'rgba(243, 156, 18, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(243, 156, 18, 1)'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: {
+                            display: true
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 100
+                    }
+                }
+            }
+        });
+
+        // Bar Chart
+        const barCtx = document.getElementById('barChartCanvas').getContext('2d');
+        const barChart = new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: ['CPJPA', 'CPJRE', 'CPJSA'],
+                datasets: [{
+                    label: 'Percepção Geral de Sobrecarga (%)',
+                    data: [28, 65, 59],
+                    backgroundColor: [
+                        'rgba(46, 204, 113, 0.7)',
+                        'rgba(231, 76, 60, 0.7)',
+                        'rgba(243, 156, 18, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(46, 204, 113, 1)',
+                        'rgba(231, 76, 60, 1)',
+                        'rgba(243, 156, 18, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        // Line Chart
+        const lineCtx = document.getElementById('lineChartCanvas').getContext('2d');
+        const lineChart = new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: ['2024 Q2', '2024 Q3', '2024 Q4', '2025 Q1'],
+                datasets: [
+                    {
+                        label: 'CPJPA',
+                        data: [25, 26, 27, 28],
+                        borderColor: 'rgba(46, 204, 113, 1)',
+                        backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'CPJRE',
+                        data: [58, 60, 63, 65],
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'CPJSA',
+                        data: [52, 54, 57, 59],
+                        borderColor: 'rgba(243, 156, 18, 1)',
+                        backgroundColor: 'rgba(243, 156, 18, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        // Doughnut Chart
+        const doughnutCtx = document.getElementById('doughnutChartCanvas').getContext('2d');
+        const doughnutChart = new Chart(doughnutCtx, {
+            type: 'doughnut',
+            data: {
+                labels: [
+                    'Processos e Organização',
+                    'Qualidade de Vida',
+                    'Gestão',
+                    'Tecnologia da Informação'
+                ],
+                datasets: [{
+                    data: [35, 30, 20, 15],
+                    backgroundColor: [
+                        'rgba(52, 152, 219, 0.7)',
+                        'rgba(155, 89, 182, 0.7)',
+                        'rgba(46, 204, 113, 0.7)',
+                        'rgba(243, 156, 18, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(52, 152, 219, 1)',
+                        'rgba(155, 89, 182, 1)',
+                        'rgba(46, 204, 113, 1)',
+                        'rgba(243, 156, 18, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    }
+                }
+            }
+        });
+
+        // Heatmap (using Chart.js)
+        const heatmapCtx = document.getElementById('heatmapChartCanvas').getContext('2d');
+        const heatmapChart = new Chart(heatmapCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Demandas Urgentes', 'Receio de Afastamentos', 'Acúmulo de Responsabilidades', 'Trabalho Fora do Expediente', 'Sistemas Desatualizados', 'Interrupções Frequentes'],
+                datasets: [
+                    {
+                        label: 'CPJPA',
+                        data: [36, 45, 0, 45, 0, 45],
+                        backgroundColor: 'rgba(46, 204, 113, 0.7)',
+                        borderColor: 'rgba(46, 204, 113, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'CPJRE',
+                        data: [85.7, 64.3, 71.4, 50, 64.3, 50],
+                        backgroundColor: 'rgba(231, 76, 60, 0.7)',
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'CPJSA',
+                        data: [73, 77, 73, 68, 41, 55],
+                        backgroundColor: 'rgba(243, 156, 18, 0.7)',
+                        borderColor: 'rgba(243, 156, 18, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: false,
+                    },
+                    y: {
+                        stacked: false,
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        // Period Filter
+        document.getElementById('periodFilter').addEventListener('change', function() {
+            // Simulate data change based on selected period
+            // In a real application, this would fetch new data from an API
+            alert('Em um ambiente real, os dados seriam atualizados para o período: ' + this.value);
+        });
+
+        // Print functionality
+        document.querySelectorAll('.chart-action').forEach(button => {
+            if (button.querySelector('.fa-download')) {
+                button.addEventListener('click', function() {
+                    window.print();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
