@@ -310,7 +310,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-image: url('/images/footer-pattern.png');
+            /* background-image: url('/images/footer-pattern.png'); */
             background-size: cover;
             border-top: 1px solid #e0e0e0;
         }
@@ -496,7 +496,7 @@
             </div>
 
             <!-- Slide Indicator -->
-            <div class="slide-indicator" id="slideIndicator">1 / 15</div>
+            <div class="slide-indicator" id="slideIndicator">1 / 12</div>
 
             <!-- Fullscreen Button -->
             <button class="fullscreen-btn" id="fullscreenBtn">
@@ -508,7 +508,7 @@
                 <div class="slide-content">
                     <div class="slide-left">
                         <div class="logo-container">
-                            <img src="/images/logo-consultoria.png" alt="Consultoria de Gestão MPDFT" style="max-width: 300px;">
+                            <img src="./public/images/logo-consultoria.png" alt="Consultoria de Gestão MPDFT" style="max-width: 300px;">
                             <p style="color: var(--accent-gold); margin-top: 20px; font-size: 1.2rem;">Assessoria de Diagnóstico e Desenvolvimento Organizacional<br>ADDIO</p>
                         </div>
                     </div>
@@ -693,7 +693,8 @@
                         <p class="left-subtitle">Comportamentos Identificados nas Coordenadorias</p>
                     </div>
                     <div class="slide-right">
-                        <h2 class="slide-title">Comportamentos Organizacionais</h2>
+                        <h2 class="slide-title">Comportamentos Organizacionais e Aspectos Culturais</h2>
+                        <p style="margin-bottom: 20px;">Análise dos padrões de comportamento individual e coletivo que impactam o ambiente de trabalho e a saúde organizacional.</p>
                         
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
                             <div class="card">
@@ -1055,7 +1056,8 @@
                         <p class="left-subtitle">Problemas Comuns às Três Coordenadorias</p>
                     </div>
                     <div class="slide-right">
-                        <h2 class="slide-title">Análise de Gargalos Comuns</h2>
+                        <h2 class="slide-title">Análise de Gargalos Estruturais</h2>
+                        <p style="margin-bottom: 20px;">Identificação dos problemas sistêmicos relacionados a processos, estruturas e recursos que afetam o funcionamento das coordenadorias.</p>
                         
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
                             <div class="card">
@@ -1332,193 +1334,8 @@
                 </div>
             </div>
 
-            <!-- Slide 11: Plano de Implementação -->
-            <div class="slide" id="slide11">
-                <div class="slide-content">
-                    <div class="slide-left">
-                        <h2 class="left-title">Plano de Implementação</h2>
-                        <p class="left-subtitle">Cronograma e Responsabilidades</p>
-                    </div>
-                    <div class="slide-right">
-                        <h2 class="slide-title">Cronograma de Implementação</h2>
-                        
-                        <div class="card">
-                            <h3 class="card-title">Fase 1: Intervenções Imediatas</h3>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                <p><strong>Período:</strong> Mês 1-3</p>
-                                <div style="width: 150px; height: 10px; background-color: rgba(255,255,255,0.2); border-radius: 5px; overflow: hidden;">
-                                    <div style="width: 100%; height: 100%; background-color: #e74c3c;"></div>
-                                </div>
-                            </div>
-                            <p><strong>Foco:</strong> Padronização de fluxos, limites para trabalho fora do expediente, sistema de classificação de urgências, campanhas de autocuidado.</p>
-                            <p><strong>Responsáveis:</strong> Coordenadorias</p>
-                        </div>
-                        
-                        <div class="card">
-                            <h3 class="card-title">Fase 2: Mudanças Estruturais</h3>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                <p><strong>Período:</strong> Mês 3-12</p>
-                                <div style="width: 150px; height: 10px; background-color: rgba(255,255,255,0.2); border-radius: 5px; overflow: hidden;">
-                                    <div style="width: 100%; height: 100%; background-color: #f39c12;"></div>
-                                </div>
-                            </div>
-                            <p><strong>Foco:</strong> Redistribuição de servidores, modernização de equipamentos, integração geográfica da CPJRE.</p>
-                            <p><strong>Responsáveis:</strong> API, STI, Coordenadorias</p>
-                        </div>
-                        
-                        <div class="card">
-                            <h3 class="card-title">Fase 3: Transformação Cultural</h3>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                <p><strong>Período:</strong> Mês 6-24</p>
-                                <div style="width: 150px; height: 10px; background-color: rgba(255,255,255,0.2); border-radius: 5px; overflow: hidden;">
-                                    <div style="width: 100%; height: 100%; background-color: #2ecc71;"></div>
-                                </div>
-                            </div>
-                            <p><strong>Foco:</strong> Programa de desenvolvimento de lideranças, sistema de feedback contínuo, política de bem-estar, centro de excelência.</p>
-                            <p><strong>Responsáveis:</strong> Secor, API, Coordenadorias</p>
-                        </div>
-                        
-                        <div class="card">
-                            <h3 class="card-title">Fase 4: Avaliação e Ajustes</h3>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                <p><strong>Período:</strong> Mês 24-30</p>
-                                <div style="width: 150px; height: 10px; background-color: rgba(255,255,255,0.2); border-radius: 5px; overflow: hidden;">
-                                    <div style="width: 100%; height: 100%; background-color: #3498db;"></div>
-                                </div>
-                            </div>
-                            <p><strong>Foco:</strong> Avaliação dos resultados, ajustes nas estratégias, consolidação das mudanças, planejamento de longo prazo.</p>
-                            <p><strong>Responsáveis:</strong> Administração Superior, Secor</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="slide-footer">
-                    <div class="footer-text">
-                        Secretaria de Educação e Desenvolvimento Corporativo - <span class="secor">Secor</span>
-                    </div>
-                    <div class="footer-logo">
-                        <span class="mp">MP</span><span class="dft">DFT</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Slide 12: Indicadores de Sucesso -->
-            <div class="slide" id="slide12">
-                <div class="slide-content">
-                    <div class="slide-left">
-                        <h2 class="left-title">Indicadores de Sucesso</h2>
-                        <p class="left-subtitle">Métricas para Avaliação do Plano</p>
-                    </div>
-                    <div class="slide-right">
-                        <h2 class="slide-title">Métricas de Acompanhamento</h2>
-                        
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-                            <div class="card">
-                                <h3 class="card-title">Indicadores Quantitativos</h3>
-                                <div class="progress-item">
-                                    <div class="progress-label">
-                                        <span>Redução da percepção de sobrecarga</span>
-                                        <span>-40%</span>
-                                    </div>
-                                    <div class="progress-bar-container">
-                                        <div class="progress-bar-fill success" style="width: 40%;"></div>
-                                    </div>
-                                </div>
-                                <div class="progress-item">
-                                    <div class="progress-label">
-                                        <span>Aumento do uso de ferramentas oficiais</span>
-                                        <span>+60%</span>
-                                    </div>
-                                    <div class="progress-bar-container">
-                                        <div class="progress-bar-fill success" style="width: 60%;"></div>
-                                    </div>
-                                </div>
-                                <div class="progress-item">
-                                    <div class="progress-label">
-                                        <span>Redução de demandas fora do expediente</span>
-                                        <span>-50%</span>
-                                    </div>
-                                    <div class="progress-bar-container">
-                                        <div class="progress-bar-fill success" style="width: 50%;"></div>
-                                    </div>
-                                </div>
-                                <div class="progress-item">
-                                    <div class="progress-label">
-                                        <span>Redução do tempo de resposta</span>
-                                        <span>-30%</span>
-                                    </div>
-                                    <div class="progress-bar-container">
-                                        <div class="progress-bar-fill success" style="width: 30%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <h3 class="card-title">Indicadores Qualitativos</h3>
-                                <ul class="bullet-list">
-                                    <li><strong>Melhoria do clima organizacional</strong>
-                                        <ul style="margin-left: 20px; margin-top: 5px; list-style-type: disc;">
-                                            <li>Pesquisas de satisfação trimestrais</li>
-                                            <li>Grupos focais de feedback</li>
-                                        </ul>
-                                    </li>
-                                    <li><strong>Aumento da satisfação</strong>
-                                        <ul style="margin-left: 20px; margin-top: 5px; list-style-type: disc;">
-                                            <li>Entrevistas individuais</li>
-                                            <li>Avaliação 360°</li>
-                                        </ul>
-                                    </li>
-                                    <li><strong>Redução de conflitos</strong>
-                                        <ul style="margin-left: 20px; margin-top: 5px; list-style-type: disc;">
-                                            <li>Monitoramento de ocorrências</li>
-                                            <li>Avaliação de gestores</li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div class="card" style="margin-top: 20px;">
-                            <h3 class="card-title">Monitoramento e Avaliação</h3>
-                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
-                                <div>
-                                    <p><strong>Curto Prazo</strong></p>
-                                    <ul class="bullet-list">
-                                        <li>Reuniões quinzenais</li>
-                                        <li>Relatórios mensais</li>
-                                        <li>Ajustes imediatos</li>
-                                    </ul>
-                                </div>
-                                <div>
-                                    <p><strong>Médio Prazo</strong></p>
-                                    <ul class="bullet-list">
-                                        <li>Avaliações trimestrais</li>
-                                        <li>Pesquisas de satisfação</li>
-                                        <li>Revisão semestral</li>
-                                    </ul>
-                                </div>
-                                <div>
-                                    <p><strong>Longo Prazo</strong></p>
-                                    <ul class="bullet-list">
-                                        <li>Avaliação anual</li>
-                                        <li>Auditoria externa</li>
-                                        <li>Planejamento contínuo</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="slide-footer">
-                    <div class="footer-text">
-                        Secretaria de Educação e Desenvolvimento Corporativo - <span class="secor">Secor</span>
-                    </div>
-                    <div class="footer-logo">
-                        <span class="mp">MP</span><span class="dft">DFT</span>
-                    </div>
-                </div>
-            </div>
-
             <!-- Slide 13: Conclusão -->
-            <div class="slide" id="slide13">
+            <div class="slide" id="slide11">
                 <div class="slide-content">
                     <div class="slide-left">
                         <h2 class="left-title">Conclusão</h2>
@@ -1608,11 +1425,11 @@
             </div>
 
             <!-- Slide 14: Agradecimento -->
-            <div class="slide" id="slide14">
+            <div class="slide" id="slide12">
                 <div class="slide-content" style="flex-direction: column;">
                     <div style="flex: 1; background-color: var(--primary-dark); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px;">
                         <div style="margin-bottom: 40px;">
-                            <img src="/images/logo-consultoria.png" alt="Consultoria de Gestão MPDFT" style="max-width: 300px;">
+                            <img src="./public/images/logo-consultoria.png" alt="Consultoria de Gestão MPDFT" style="max-width: 300px;">
                             <p style="color: var(--accent-gold); margin-top: 20px; font-size: 1.2rem; text-align: center;">Assessoria de Diagnóstico e Desenvolvimento Organizacional<br>ADDIO</p>
                         </div>
                         <h1 style="font-size: 4rem; color: white; margin-top: 60px; margin-bottom: 60px;">Até breve!</h1>
@@ -1655,10 +1472,8 @@
             { id: 'slide8', title: 'Gargalos Sistêmicos' },
             { id: 'slide9', title: 'Intervenções Estratégicas' },
             { id: 'slide10', title: 'Recomendações Prioritárias' },
-            { id: 'slide11', title: 'Plano de Implementação' },
-            { id: 'slide12', title: 'Indicadores de Sucesso' },
-            { id: 'slide13', title: 'Conclusão' },
-            { id: 'slide14', title: 'Agradecimento' }
+            { id: 'slide11', title: 'Conclusão' },
+            { id: 'slide12', title: 'Agradecimento' }
         ];
 
         // Slides Navigation
@@ -1724,129 +1539,133 @@
         // Initialize Charts
         window.addEventListener('load', function() {
             // Radar Chart
-            const radarCtx = document.getElementById('radarChartCanvas').getContext('2d');
-            const radarChart = new Chart(radarCtx, {
-                type: 'radar',
-                data: {
-                    labels: ['Processos e Organização', 'Qualidade de Vida', 'Gestão', 'Tecnologia da Informação'],
-                    datasets: [
-                        {
-                            label: 'CPJPA',
-                            data: [42, 45, 45, 36],
-                            backgroundColor: 'rgba(46, 204, 113, 0.2)',
-                            borderColor: 'rgba(46, 204, 113, 1)',
-                            pointBackgroundColor: 'rgba(46, 204, 113, 1)',
-                            pointBorderColor: '#fff',
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: 'rgba(46, 204, 113, 1)'
-                        },
-                        {
-                            label: 'CPJRE',
-                            data: [65, 64, 67, 64],
-                            backgroundColor: 'rgba(231, 76, 60, 0.2)',
-                            borderColor: 'rgba(231, 76, 60, 1)',
-                            pointBackgroundColor: 'rgba(231, 76, 60, 1)',
-                            pointBorderColor: '#fff',
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: 'rgba(231, 76, 60, 1)'
-                        },
-                        {
-                            label: 'CPJSA',
-                            data: [59, 62, 55, 41],
-                            backgroundColor: 'rgba(243, 156, 18, 0.2)',
-                            borderColor: 'rgba(243, 156, 18, 1)',
-                            pointBackgroundColor: 'rgba(243, 156, 18, 1)',
-                            pointBorderColor: '#fff',
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: 'rgba(243, 156, 18, 1)'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        r: {
-                            angleLines: {
-                                display: true
+            const radarCtx = document.getElementById('radarChartCanvas');
+            if (radarCtx) {
+                const radarChart = new Chart(radarCtx.getContext('2d'), {
+                    type: 'radar',
+                    data: {
+                        labels: ['Processos e Organização', 'Qualidade de Vida', 'Gestão', 'Tecnologia da Informação'],
+                        datasets: [
+                            {
+                                label: 'CPJPA',
+                                data: [42, 45, 45, 36],
+                                backgroundColor: 'rgba(46, 204, 113, 0.2)',
+                                borderColor: 'rgba(46, 204, 113, 1)',
+                                pointBackgroundColor: 'rgba(46, 204, 113, 1)',
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: 'rgba(46, 204, 113, 1)'
                             },
-                            suggestedMin: 0,
-                            suggestedMax: 100,
-                            ticks: {
-                                color: 'rgba(255, 255, 255, 0.7)'
+                            {
+                                label: 'CPJRE',
+                                data: [65, 64, 67, 64],
+                                backgroundColor: 'rgba(231, 76, 60, 0.2)',
+                                borderColor: 'rgba(231, 76, 60, 1)',
+                                pointBackgroundColor: 'rgba(231, 76, 60, 1)',
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: 'rgba(231, 76, 60, 1)'
                             },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.3)'
-                            },
-                            pointLabels: {
-                                color: 'rgba(255, 255, 255, 0.7)'
+                            {
+                                label: 'CPJSA',
+                                data: [59, 62, 55, 41],
+                                backgroundColor: 'rgba(243, 156, 18, 0.2)',
+                                borderColor: 'rgba(243, 156, 18, 1)',
+                                pointBackgroundColor: 'rgba(243, 156, 18, 1)',
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: 'rgba(243, 156, 18, 1)'
                             }
-                        }
+                        ]
                     },
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: 'rgba(255, 255, 255, 0.7)'
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                angleLines: {
+                                    display: true
+                                },
+                                suggestedMin: 0,
+                                suggestedMax: 100,
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.3)'
+                                },
+                                pointLabels: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                }
                             }
                         }
                     }
-                }
-            });
+                });
+            }
 
             // Bar Chart
-            const barCtx = document.getElementById('barChartCanvas').getContext('2d');
-            const barChart = new Chart(barCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['CPJPA', 'CPJRE', 'CPJSA'],
-                    datasets: [{
-                        label: 'Percepção Geral de Sobrecarga (%)',
-                        data: [28, 65, 59],
-                        backgroundColor: [
-                            'rgba(46, 204, 113, 0.7)',
-                            'rgba(231, 76, 60, 0.7)',
-                            'rgba(243, 156, 18, 0.7)'
-                        ],
-                        borderColor: [
-                            'rgba(46, 204, 113, 1)',
-                            'rgba(231, 76, 60, 1)',
-                            'rgba(243, 156, 18, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                color: 'rgba(255, 255, 255, 0.7)'
+            const barCtx = document.getElementById('barChartCanvas');
+            if (barCtx) {
+                const barChart = new Chart(barCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['CPJPA', 'CPJRE', 'CPJSA'],
+                        datasets: [{
+                            label: 'Percepção Geral de Sobrecarga (%)',
+                            data: [28, 65, 59],
+                            backgroundColor: [
+                                'rgba(46, 204, 113, 0.7)',
+                                'rgba(231, 76, 60, 0.7)',
+                                'rgba(243, 156, 18, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(46, 204, 113, 1)',
+                                'rgba(231, 76, 60, 1)',
+                                'rgba(243, 156, 18, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.3)'
+                                }
                             },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.3)'
+                            x: {
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.3)'
+                                }
                             }
                         },
-                        x: {
-                            ticks: {
-                                color: 'rgba(255, 255, 255, 0.7)'
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.3)'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: 'rgba(255, 255, 255, 0.7)'
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                }
                             }
                         }
                     }
-                }
-            });
+                });
+            }
         });
     </script>
 </body>
