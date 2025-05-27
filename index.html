@@ -306,14 +306,39 @@
         /* Footer */
         .slide-footer {
             background-color: #fff;
-            padding: 10px;
+            padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background-image: url('/images/footer-pattern.png');
+            background-size: cover;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .footer-text {
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        .secor {
+            color: #c22;
+            font-weight: bold;
         }
 
         .footer-logo {
-            height: 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .mp {
+            color: #c22;
+            background-color: #c22;
+            color: white;
+            padding: 2px 4px;
+        }
+
+        .dft {
+            color: #666;
         }
 
         /* Navigation Controls */
@@ -483,7 +508,8 @@
                 <div class="slide-content">
                     <div class="slide-left">
                         <div class="logo-container">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxnPgogICAgICAgIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iNzAiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNCIgZmlsbD0ibm9uZSIvPgogICAgICAgIDxwYXRoIGQ9Ik0xMDAsNDAgQzEzMCw0MCAxNTAsNjAgMTUwLDkwIEMxNTAsMTIwIDEzMCwxNDAgMTAwLDE0MCBDNzAsMTQwIDUwLDEyMCA1MCw5MCBDNTAsNjAgNzAsNDAgMTAwLDQwIFoiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNCIvPgogICAgICAgIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjcwIiByPSIxMCIgZmlsbD0id2hpdGUiLz4KICAgICAgICA8Y2lyY2xlIGN4PSI3MCIgY3k9IjkwIiByPSIxMCIgZmlsbD0id2hpdGUiLz4KICAgICAgICA8Y2lyY2xlIGN4PSIxMzAiIGN5PSI5MCIgcj0iMTAiIGZpbGw9IndoaXRlIi8+CiAgICAgICAgPHBhdGggZD0iTTEwMCwxMDAgTDEwMCwxMjAiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNCIvPgogICAgICAgIDxwYXRoIGQ9Ik03MCwxMTAgTDEzMCwxMTAiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNCIvPgogICAgICAgIDxwYXRoIGQ9Ik0xNTAsNjAgQzE4MCw5MCAxODAsMTEwIDE1MCwxNDAiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgICA8L2c+CiAgICA8dGV4dCB4PSIxMDAiIHk9IjE4MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+Q29uc3VsdG9yaWEgZGUgR2VzdMOjbzwvdGV4dD4KICAgIDx0ZXh0IHg9IjEwMCIgeT0iMjEwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5NUERGTDWVDGV4dD4KPC9zdmc+" alt="Consultoria de Gestão MPDFT">
+                            <img src="/images/logo-consultoria.png" alt="Consultoria de Gestão MPDFT" style="max-width: 300px;">
+                            <p style="color: var(--accent-gold); margin-top: 20px; font-size: 1.2rem;">Assessoria de Diagnóstico e Desenvolvimento Organizacional<br>ADDIO</p>
                         </div>
                     </div>
                     <div class="slide-right">
@@ -497,8 +523,12 @@
                     </div>
                 </div>
                 <div class="slide-footer">
-                    <div></div>
-                    <img src="/images/logo-mpdft.png" alt="MPDFT" class="footer-logo">
+                    <div class="footer-text">
+                        Secretaria de Educação e Desenvolvimento Corporativo - <span class="secor">Secor</span>
+                    </div>
+                    <div class="footer-logo">
+                        <span class="mp">MP</span><span class="dft">DFT</span>
+                    </div>
                 </div>
             </div>
 
@@ -564,8 +594,12 @@
                     </div>
                 </div>
                 <div class="slide-footer">
-                    <div></div>
-                    <img src="/images/logo-mpdft.png" alt="MPDFT" class="footer-logo">
+                    <div class="footer-text">
+                        Secretaria de Educação e Desenvolvimento Corporativo - <span class="secor">Secor</span>
+                    </div>
+                    <div class="footer-logo">
+                        <span class="mp">MP</span><span class="dft">DFT</span>
+                    </div>
                 </div>
             </div>
 
@@ -642,8 +676,12 @@
                     </div>
                 </div>
                 <div class="slide-footer">
-                    <div></div>
-                    <img src="/images/logo-mpdft.png" alt="MPDFT" class="footer-logo">
+                    <div class="footer-text">
+                        Secretaria de Educação e Desenvolvimento Corporativo - <span class="secor">Secor</span>
+                    </div>
+                    <div class="footer-logo">
+                        <span class="mp">MP</span><span class="dft">DFT</span>
+                    </div>
                 </div>
             </div>
 
@@ -726,8 +764,12 @@
                     </div>
                 </div>
                 <div class="slide-footer">
-                    <div></div>
-                    <img src="/images/logo-mpdft.png" alt="MPDFT" class="footer-logo">
+                    <div class="footer-text">
+                        Secretaria de Educação e Desenvolvimento Corporativo - <span class="secor">Secor</span>
+                    </div>
+                    <div class="footer-logo">
+                        <span class="mp">MP</span><span class="dft">DFT</span>
+                    </div>
                 </div>
             </div>
 
@@ -820,8 +862,12 @@
                     </div>
                 </div>
                 <div class="slide-footer">
-                    <div></div>
-                    <img src="/images/logo-mpdft.png" alt="MPDFT" class="footer-logo">
+                    <div class="footer-text">
+                        Secretaria de Educação e Desenvolvimento Corporativo - <span class="secor">Secor</span>
+                    </div>
+                    <div class="footer-logo">
+                        <span class="mp">MP</span><span class="dft">DFT</span>
+                    </div>
                 </div>
             </div>
 
@@ -912,8 +958,12 @@
                     </div>
                 </div>
                 <div class="slide-footer">
-                    <div></div>
-                    <img src="/images/logo-mpdft.png" alt="MPDFT" class="footer-logo">
+                    <div class="footer-text">
+                        Secretaria de Educação e Desenvolvimento Corporativo - <span class="secor">Secor</span>
+                    </div>
+                    <div class="footer-logo">
+                        <span class="mp">MP</span><span class="dft">DFT</span>
+                    </div>
                 </div>
             </div>
 
@@ -988,8 +1038,12 @@
                     </div>
                 </div>
                 <div class="slide-footer">
-                    <div></div>
-                    <img src="/images/logo-mpdft.png" alt="MPDFT" class="footer-logo">
+                    <div class="footer-text">
+                        Secretaria de Educação e Desenvolvimento Corporativo - <span class="secor">Secor</span>
+                    </div>
+                    <div class="footer-logo">
+                        <span class="mp">MP</span><span class="dft">DFT</span>
+                    </div>
                 </div>
             </div>
 
@@ -1080,8 +1134,12 @@
                     </div>
                 </div>
                 <div class="slide-footer">
-                    <div></div>
-                    <img src="/images/logo-mpdft.png" alt="MPDFT" class="footer-logo">
+                    <div class="footer-text">
+                        Secretaria de Educação e Desenvolvimento Corporativo - <span class="secor">Secor</span>
+                    </div>
+                    <div class="footer-logo">
+                        <span class="mp">MP</span><span class="dft">DFT</span>
+                    </div>
                 </div>
             </div>
 
@@ -1173,8 +1231,12 @@
                     </div>
                 </div>
                 <div class="slide-footer">
-                    <div></div>
-                    <img src="/images/logo-mpdft.png" alt="MPDFT" class="footer-logo">
+                    <div class="footer-text">
+                        Secretaria de Educação e Desenvolvimento Corporativo - <span class="secor">Secor</span>
+                    </div>
+                    <div class="footer-logo">
+                        <span class="mp">MP</span><span class="dft">DFT</span>
+                    </div>
                 </div>
             </div>
 
@@ -1261,8 +1323,12 @@
                     </div>
                 </div>
                 <div class="slide-footer">
-                    <div></div>
-                    <img src="/images/logo-mpdft.png" alt="MPDFT" class="footer-logo">
+                    <div class="footer-text">
+                        Secretaria de Educação e Desenvolvimento Corporativo - <span class="secor">Secor</span>
+                    </div>
+                    <div class="footer-logo">
+                        <span class="mp">MP</span><span class="dft">DFT</span>
+                    </div>
                 </div>
             </div>
 
@@ -1326,8 +1392,12 @@
                     </div>
                 </div>
                 <div class="slide-footer">
-                    <div></div>
-                    <img src="/images/logo-mpdft.png" alt="MPDFT" class="footer-logo">
+                    <div class="footer-text">
+                        Secretaria de Educação e Desenvolvimento Corporativo - <span class="secor">Secor</span>
+                    </div>
+                    <div class="footer-logo">
+                        <span class="mp">MP</span><span class="dft">DFT</span>
+                    </div>
                 </div>
             </div>
 
@@ -1438,8 +1508,12 @@
                     </div>
                 </div>
                 <div class="slide-footer">
-                    <div></div>
-                    <img src="/images/logo-mpdft.png" alt="MPDFT" class="footer-logo">
+                    <div class="footer-text">
+                        Secretaria de Educação e Desenvolvimento Corporativo - <span class="secor">Secor</span>
+                    </div>
+                    <div class="footer-logo">
+                        <span class="mp">MP</span><span class="dft">DFT</span>
+                    </div>
                 </div>
             </div>
 
@@ -1524,31 +1598,33 @@
                     </div>
                 </div>
                 <div class="slide-footer">
-                    <div></div>
-                    <img src="/images/logo-mpdft.png" alt="MPDFT" class="footer-logo">
+                    <div class="footer-text">
+                        Secretaria de Educação e Desenvolvimento Corporativo - <span class="secor">Secor</span>
+                    </div>
+                    <div class="footer-logo">
+                        <span class="mp">MP</span><span class="dft">DFT</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Slide 14: Agradecimento -->
             <div class="slide" id="slide14">
-                <div class="slide-content">
-                    <div class="slide-left">
-                        <h2 class="left-title">Agradecimento</h2>
-                        <p class="left-subtitle">Consultoria de Gestão</p>
-                    </div>
-                    <div class="slide-right" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                        <h2 class="slide-title" style="font-size: 3rem; margin-bottom: 40px;">Obrigado!</h2>
-                        <p style="font-size: 1.5rem; margin-bottom: 40px;">Perguntas e Discussão</p>
-                        <div style="margin-top: 40px;">
-                            <p><i class="fas fa-envelope" style="margin-right: 10px;"></i> consultoria@mpdft.gov.br</p>
-                            <p><i class="fas fa-phone" style="margin-right: 10px;"></i> (61) 3344-5500</p>
-                            <p><i class="fas fa-globe" style="margin-right: 10px;"></i> www.mpdft.gov.br</p>
+                <div class="slide-content" style="flex-direction: column;">
+                    <div style="flex: 1; background-color: var(--primary-dark); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px;">
+                        <div style="margin-bottom: 40px;">
+                            <img src="/images/logo-consultoria.png" alt="Consultoria de Gestão MPDFT" style="max-width: 300px;">
+                            <p style="color: var(--accent-gold); margin-top: 20px; font-size: 1.2rem; text-align: center;">Assessoria de Diagnóstico e Desenvolvimento Organizacional<br>ADDIO</p>
                         </div>
+                        <h1 style="font-size: 4rem; color: white; margin-top: 60px; margin-bottom: 60px;">Até breve!</h1>
                     </div>
                 </div>
                 <div class="slide-footer">
-                    <div></div>
-                    <img src="/images/logo-mpdft.png" alt="MPDFT" class="footer-logo">
+                    <div class="footer-text">
+                        Secretaria de Educação e Desenvolvimento Corporativo - <span class="secor">Secor</span>
+                    </div>
+                    <div class="footer-logo">
+                        <span class="mp">MP</span><span class="dft">DFT</span>
+                    </div>
                 </div>
             </div>
 
